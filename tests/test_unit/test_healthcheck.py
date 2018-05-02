@@ -71,5 +71,6 @@ class LazyEnvironmentDumpTest(unittest.TestCase):
     def _hc(self):
         return EnvironmentDump()
 
+
 if __name__ == '__main__':
     unittest.main()
