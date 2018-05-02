@@ -17,7 +17,7 @@ setup(name='healthcheck',
       install_requires=[],
       test_requires=['flask'],
       test_suite='test_healthcheck',
-      classifiers=('Development Status :: 5 - Production/Stable',
+      classifiers=['Development Status :: 5 - Production/Stable',
                    'Environment :: Web Environment',
                    'Framework :: Flask',
-                   'Programming Language :: Python'))
+                   'Programming Language :: Python'])
