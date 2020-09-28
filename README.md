@@ -1,4 +1,4 @@
-Healthcheck
+Healthcheck-Extended
 ----------
 
 Healthcheck wraps a Flask app object and adds a way to write simple healthcheck
@@ -14,6 +14,14 @@ data about the operating system, the Python environment, the current process,
 and the application config. You can customize which sections are included, or
 add your own sections to the output.
 
+This fork contains some tweaks, mostly regarding a more flexible timestamp
+format handling to make it more usable.
+
+Forked from: https://github.com/Runscope/healthcheck
+
+### Version 1.3.4
+- Add support for UTC timestamps
+
 ## Installing
 
 ```
@@ -27,7 +35,7 @@ Here's an example of basic usage:
 
 ```python
 from flask import Flask
-from healthcheck import HealthCheck, EnvironmentDump
+from healthcheck_extended import HealthCheck, EnvironmentDump
 
 app = Flask(__name__)
 

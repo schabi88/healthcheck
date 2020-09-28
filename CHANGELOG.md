@@ -1,5 +1,8 @@
 # Healthcheck Changelog
 
+### 1.3.4
+- Add support for UTC timestamps
+
 ### 1.3.1
 - Fix for 'Inappropriate ioctl for device' error on posix systems.
 

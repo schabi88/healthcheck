@@ -39,3 +39,6 @@ nosetests.xml
 
 # Virtualenvironment
 /venv
+
+# SCM Version
+_version.py

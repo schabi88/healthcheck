@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 import unittest
 import flask
-from healthcheck import HealthCheck, EnvironmentDump
+from healthcheck_extended import HealthCheck, EnvironmentDump
 
 
 class BasicHealthCheckTest(unittest.TestCase):
