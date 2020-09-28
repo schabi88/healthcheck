@@ -7,6 +7,7 @@ import sys
 import time
 import traceback
 import platform
+import datetime
 from flask import current_app
 try:
     from functools import reduce
@@ -19,10 +20,11 @@ def basic_exception_handler(_, e):
 
 
 def json_success_handler(results):
+    timestamp = Timestamp(time_format="utcnow")
     data = {
         'hostname': socket.gethostname(),
         'status': 'success',
-        'timestamp': time.time(),
+        'timestamp': str(timestamp.get_time()),
         'results': results,
     }
 
@@ -30,10 +32,11 @@ def json_success_handler(results):
 
 
 def json_failed_handler(results):
+    timestamp = Timestamp(time_format="utcnow")
     data = {
         'hostname': socket.gethostname(),
         'status': 'failure',
-        'timestamp': time.time(),
+        'timestamp': str(timestamp.get_time()),
         'results': results,
     }
 
@@ -50,7 +53,7 @@ class HealthCheck(object):
                  success_ttl=27, failed_status=500, failed_headers=None,
                  failed_handler=json_failed_handler, failed_ttl=9,
                  exception_handler=basic_exception_handler, checkers=None,
-                 log_on_failure=True,
+                 log_on_failure=True, time_format="time",
                  **options):
         self.cache = dict()
 
@@ -71,6 +74,8 @@ class HealthCheck(object):
         self.options = options
         self.checkers = checkers or []
 
+        self.timestamp = Timestamp(time_format="utcnow")
+
         if app:
             self.init_app(app, path)
 
@@ -84,7 +89,8 @@ class HealthCheck(object):
     def check(self):
         results = []
         for checker in self.checkers:
-            if checker in self.cache and self.cache[checker].get('expires') >= time.time():
+            timestamp = Timestamp(time_format="utcnow")
+            if checker in self.cache and self.cache[checker].get('expires') >= str(timestamp.get_time()):
                 result = self.cache[checker]
             else:
                 result = self.run_check(checker)
@@ -120,18 +126,33 @@ class HealthCheck(object):
             if self.log_on_failure:
                 current_app.logger.error(msg)
 
-        timestamp = time.time()
+        timestamp = self.timestamp.get_time()
         if passed:
-            expires = timestamp + self.success_ttl
+            expires = timestamp + datetime.timedelta(seconds=self.success_ttl)
         else:
-            expires = timestamp + self.failed_ttl
+            expires = timestamp + datetime.timedelta(seconds=self.failed_ttl)
 
         result = {'checker': checker.__name__,
                   'output': output,
                   'passed': passed,
-                  'timestamp': timestamp,
-                  'expires': expires}
+                  'timestamp': str(timestamp),
+                  'expires': str(expires)}
         return result
+
+
+class Timestamp(object):
+    def __init__(self, time_format="time"):
+        self.time_format = time_format
+        self._set_time_format()
+
+    def _set_time_format(self):
+        if self.time_format == "time":
+            self.time_function = datetime.datetime.time
+        elif self.time_format == "utcnow":
+            self.time_function = datetime.datetime.utcnow
+
+    def get_time(self):
+        return self.time_function()
 
 
 class EnvironmentDump(object):
