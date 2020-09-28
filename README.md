@@ -25,7 +25,7 @@ Forked from: https://github.com/Runscope/healthcheck
 ## Installing
 
 ```
-pip install healthcheck
+pip install healthcheck-extended
 
 ```
 
